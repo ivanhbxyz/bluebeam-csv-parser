@@ -57,11 +57,11 @@ public class Item {
 	
 	public Item(String i, String spac, String sub, String man, String mod, String dim,String la, String cc) {
 		id = i;
+		space = spac;
 		subject = sub;
 		manufacture = man;
 		model = mod;
 		dimensions = dim;
-		space = spac;
 		layer = la;
 		comments = cc;
 	}

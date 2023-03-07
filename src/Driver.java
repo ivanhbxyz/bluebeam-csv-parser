@@ -10,11 +10,8 @@
  * 
  */
 
-
-
 import org.apache.commons.codec.binary.Hex;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Arrays;
 
 public class Driver {
 	
@@ -50,9 +46,7 @@ public class Driver {
 	          if ("efbbbf".equalsIgnoreCase(content)) {
 	              result = true;
 	          }
-
 	      }
-
 	      return result;
 	  }
 
@@ -88,9 +82,9 @@ public class Driver {
 	
 	public static void main(String[] args) throws Exception{
 		System.out.println("Launching Bluebeam Parsing App\n");
+		String csvPath = "./input/visa-csv.csv";
 		
-		
-		Path path = Paths.get("Y:\\ivanh\\Documents\\workspace\\eclipse_ide\\bluebeam-parser\\java-prog\\input\\visa-csv.csv");
+		Path path = Paths.get(csvPath);
 		
 		if(isContainBOM(path)){
 	          System.out.println("Found BOM!");
@@ -101,11 +95,9 @@ public class Driver {
 	          System.out.println("No BOM.");
 	      }
 		
-		
 		List <String> csvArrayList = new ArrayList<>();
 		
-		try (Scanner sc = new Scanner(new File("Y:\\ivanh\\Documents\\workspace\\eclipse_ide\\bluebeam-parser\\java-prog\\input\\visa-csv.csv"))) {
-			
+		try (Scanner sc = new Scanner(new File(csvPath))) {
 			while(sc.hasNextLine()) {
 				csvArrayList.add(sc.nextLine());
 			}
@@ -134,7 +126,6 @@ public class Driver {
 	            currLine.add(rowScanner.next());
 	        }
 	    }
-		
 
 		int idNo = currLine.indexOf("ID");
 		int spaceNo = currLine.indexOf("Space");
@@ -160,18 +151,11 @@ public class Driver {
 		        	String word = rowScanner.next();
 		            curcur.add(word);
 		        }
-		        //System.out.println();
-		        //System.out.println(currLine.toString());
-		        //System.out.println();
-		        
-		        file.add(curcur);
-		        
+		        file.add(curcur);   
 		    }
 		}
 		
 		List<List<String>> filteredFile = new ArrayList<>();
-		
-		
 		
 		for(int i = 0; i < file.size(); i++) {
 			List<String> newLine = new ArrayList<>();
@@ -201,10 +185,7 @@ public class Driver {
 		layerNo = 8;
 		length = 9;
 		
-		
-		
 		// Place holder arrays to hold the constructed custom data structures
-		
 		List <Space> foundSpaces = new ArrayList<>();
 		//List <MaterialComplex> foundMaterial = new ArrayList<>(); // Note that for the time being we are forced to use a different array list for tracking
 		//List <MaterialSimple> foundMaterial = new ArrayList<>();
@@ -212,14 +193,9 @@ public class Driver {
 		// Need to implement a comparator or something that works for the the .equals method
 		//List<String> foundMat = new ArrayList<>();
 		List<String> foundSpa = new ArrayList<>();
-		
 		List<Item> foundItems = new ArrayList<>();
-				
-		
 		
 		for(int i = 0; i < filteredFile.size(); i++) {
-			
-			
 			/*
 			if(!filteredFile.get(i).get(subNo).equals("")) { // If Subject is NOT empty then it must be a Material
 				// Create the Item object
@@ -240,8 +216,13 @@ public class Driver {
 				}
 			}
 			*/
-			if(!filteredFile.get(i).get(subNo).equals("")) { // If Subject is NOT empty then it must be a Material
-				Item newItem = new Item(filteredFile.get(i).get(idNo),filteredFile.get(i).get(subNo), filteredFile.get(i).get(spaceNo),"",filteredFile.get(i).get(spaceNo));
+			if(!filteredFile.get(i).get(subNo).equals("") ) { // If Subject is NOT empty then it must be a Material
+				//Item newItem = new Item(filteredFile.get(i).get(idNo),filteredFile.get(i).get(subNo), filteredFile.get(i).get(spaceNo),"",filteredFile.get(i).get(spaceNo));
+				Item newItem = new Item (
+						filteredFile.get(i).get(idNo), filteredFile.get(i).get(spaceNo), filteredFile.get(i).get(plansTag),
+						filteredFile.get(i).get(subNo), filteredFile.get(i).get(manufacture),filteredFile.get(i).get(model),
+						filteredFile.get(i).get(layerNo),filteredFile.get(i).get(commentNo)
+						);
 				foundItems.add(newItem);
 				if(foundMaterial.indexOf(newItem.getSubject()) == -1) {
 					MaterialSimple newMat = new MaterialSimple(newItem.getSubject());
@@ -293,11 +274,10 @@ public class Driver {
 			}
 		}
 		
-		// Get ready to create the RDA TakeOff Matrix
 		//https://www.baeldung.com/java-multi-dimensional-arraylist
-		System.out.println("d");
+		System.out.println("Printing RDA Takeoff Matrix\n");
 		ArrayList<ArrayList<Integer> > mat = new ArrayList<>();
-		int [][] matmat = new int [45][45];
+		int [][] matmat = new int [foundSpaces.size()][foundMaterial.size()];
 		
 		for(int i = 0; i < foundSpaces.size(); i++) {
 			mat.add(new ArrayList<>());
@@ -310,63 +290,46 @@ public class Driver {
 			}
 		}
 		
-		
-		
 		System.out.println(foundMaterial.toString());
 		
 		//for(int i = 0; i < foundMaterial.size();i++) {
 		//	System.out.print(i + ", ");
 		//}
 		
-		
-		System.out.println();
-		
 		/*
 		for(int i = 0; i < foundSpaces.size(); i++) {
 			System.out.println(foundSpaces.get(i).getName() + " " + i +" ");
 		}
 		*/
-		System.out.println();
-		
-		
+		int row;
+		int col;
 		for(int i = 0; i < foundSpaces.size(); i++) {
 			for (int j = 0; j < foundSpaces.get(i).materialsLog.size(); j++) {
 				
-				List<Integer> temp;
-				Integer tempI;
 				s = foundSpaces.get(i);
-				int row = foundSpa.indexOf(s.getName());
-				int col = foundMaterial.indexOf(s.materialsLog.get(j).getSubject());
-				
-				//mat.get(row).get(col).equals(s.materialsLog.get(j).getCount());
-				
+				row = foundSpa.indexOf(s.getName());
+				col = foundMaterial.indexOf(s.materialsLog.get(j).getSubject());
+
 				matmat[row][col] = s.materialsLog.get(j).getCount();
-				
 			}
 		}
 		
 		
-		for(int i = 0; i < matmat.length; i++ ) {
+		for(int i = 0; i < foundSpaces.size(); i++ ) {
 			s = foundSpaces.get(i);
 			System.out.print(s.name + ",");
 			
 			for(int j = 0; j< matmat[i].length-1; j++) {
 				
-				
 				System.out.print(matmat[i][j] + ",");
 			}
-			System.out.println(matmat[i][matmat[i].length-1]);
 			
-			
-			
+			System.out.println(matmat[i][matmat[i].length-1]);		
 		}
 		
-		
-		
-		System.out.println("S");
-		
 	
-
+		System.out.println("\nDone");
+		
 
 	} // END OF main()
 
