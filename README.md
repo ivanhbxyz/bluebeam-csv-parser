@@ -1,1 +1,1 @@
-# Bluebeam CSV Parser
+# Bluebeam CSV Parser (commandline tool)
