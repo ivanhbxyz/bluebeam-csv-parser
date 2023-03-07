@@ -275,7 +275,7 @@ public class Driver {
 		}
 		
 		//https://www.baeldung.com/java-multi-dimensional-arraylist
-		System.out.println("Printing RDA Takeoff Matrix\n");
+		System.out.println("\nPrinting RDA Takeoff Matrix\n");
 		ArrayList<ArrayList<Integer> > mat = new ArrayList<>();
 		int [][] matmat = new int [foundSpaces.size()][foundMaterial.size()];
 		
