@@ -1,1 +1,2 @@
-# bluebeam-csv-parser
+# Bluebeam CSV Parser
+#### (a command line tool)
