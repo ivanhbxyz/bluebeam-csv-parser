@@ -24,18 +24,18 @@ public class Space {
 	public void addItem(Item i) {
 		int nextLoc = materialsLog.size();
 		
-		if(!materialDict.containsKey(i.getSubject()) ) {
-			materialDict.put(i.getSubject(), nextLoc);
+		if(!materialDict.containsKey(i.getTag()) ) {
+			materialDict.put(i.getTag(), nextLoc);
 			//MaterialComplex newMaterial = new MaterialComplex(i.getSubject());
-			MaterialSimple newMaterial = new MaterialSimple(i.getSubject());
+			MaterialSimple newMaterial = new MaterialSimple(i.getTag());
 			
 			materialsLog.add(newMaterial);
 			//materialsLog.get(materialDict.get(i.getSubject())).addItem(i);
-			materialsLog.get(materialDict.get(i.getSubject())).addItem();
+			materialsLog.get(materialDict.get(i.getTag())).addItem();
 			
 		} else {
 			//materialsLog.get(materialDict.get(i.getSubject())).addItem(i);
-			materialsLog.get(materialDict.get(i.getSubject())).addItem();
+			materialsLog.get(materialDict.get(i.getTag())).addItem();
 			
 		}
 		
@@ -45,18 +45,18 @@ public class Space {
 	public void addItem(Item i, int c) {
 		int nextLoc = materialsLog.size();
 		
-		if(!materialDict.containsKey(i.getSubject()) ) {
-			materialDict.put(i.getSubject(), nextLoc);
+		if(!materialDict.containsKey(i.getTag()) ) {
+			materialDict.put(i.getTag(), nextLoc);
 			//MaterialComplex newMaterial = new MaterialComplex(i.getSubject());
-			MaterialSimple newMaterial = new MaterialSimple(i.getSubject());
+			MaterialSimple newMaterial = new MaterialSimple(i.getTag());
 			
 			materialsLog.add(newMaterial);
 			//materialsLog.get(materialDict.get(i.getSubject())).addItem(i);
-			materialsLog.get(materialDict.get(i.getSubject())).addItem(c);
+			materialsLog.get(materialDict.get(i.getTag())).addItem(c);
 			
 		} else {
 			//materialsLog.get(materialDict.get(i.getSubject())).addItem(i);
-			materialsLog.get(materialDict.get(i.getSubject())).addItem(c);
+			materialsLog.get(materialDict.get(i.getTag())).addItem(c);
 			
 		}
 		

@@ -29,7 +29,7 @@ public class MaterialComplex {
 		return myList.add(sup);
 	}
 	
-	public String getSubject() {
+	public String getTag() {
 		return subject;
 	}
 	

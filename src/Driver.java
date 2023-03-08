@@ -165,8 +165,8 @@ public class Driver {
 			newLine.add(file.get(i).get(subNo)); // 3
 			newLine.add(file.get(i).get(manufacture)); // 4
 			newLine.add(file.get(i).get(model)); // 5
-			newLine.add(file.get(i).get(commentNo)); // 6
-			newLine.add(file.get(i).get(dimensions)); // 7
+			newLine.add(file.get(i).get(dimensions)); // 6
+			newLine.add(file.get(i).get(commentNo)); // 7
 			newLine.add(file.get(i).get(layerNo)); // 8
 			newLine.add(file.get(i).get(length)); // 9
 			
@@ -180,8 +180,8 @@ public class Driver {
 		subNo = 3;
 		manufacture = 4;
 		model = 5;
-		commentNo = 6;
-		dimensions = 7;
+		dimensions = 6;
+		commentNo = 7;
 		layerNo = 8;
 		length = 9;
 		
@@ -189,7 +189,10 @@ public class Driver {
 		List <Space> foundSpaces = new ArrayList<>();
 		//List <MaterialComplex> foundMaterial = new ArrayList<>(); // Note that for the time being we are forced to use a different array list for tracking
 		//List <MaterialSimple> foundMaterial = new ArrayList<>();
-		List <String> foundMaterial = new ArrayList<>();
+		List <String> foundMaterialTags = new ArrayList<>();
+		List <String> foundMaterialSubjects = new ArrayList<>();
+		List <String> foundMaterialManufacs = new ArrayList<>();
+		List <String> foundMaterialModels = new ArrayList<>();
 		// Need to implement a comparator or something that works for the the .equals method
 		//List<String> foundMat = new ArrayList<>();
 		List<String> foundSpa = new ArrayList<>();
@@ -216,17 +219,24 @@ public class Driver {
 				}
 			}
 			*/
-			if(!filteredFile.get(i).get(subNo).equals("") ) { // If Subject is NOT empty then it must be a Material
-				//Item newItem = new Item(filteredFile.get(i).get(idNo),filteredFile.get(i).get(subNo), filteredFile.get(i).get(spaceNo),"",filteredFile.get(i).get(spaceNo));
+			if(!filteredFile.get(i).get(plansTag).equals("") ) { // If Subject is NOT empty then it must be a Material
 				Item newItem = new Item (
 						filteredFile.get(i).get(idNo), filteredFile.get(i).get(spaceNo), filteredFile.get(i).get(plansTag),
 						filteredFile.get(i).get(subNo), filteredFile.get(i).get(manufacture),filteredFile.get(i).get(model),
+						filteredFile.get(i).get(dimensions),
 						filteredFile.get(i).get(layerNo),filteredFile.get(i).get(commentNo)
 						);
 				foundItems.add(newItem);
-				if(foundMaterial.indexOf(newItem.getSubject()) == -1) {
-					MaterialSimple newMat = new MaterialSimple(newItem.getSubject());
-					foundMaterial.add(newMat.getSubject());
+				
+				if(foundMaterialTags.indexOf(newItem.getTag()) == -1) {
+					
+					MaterialSimple newMat = new MaterialSimple(newItem.getTag(), newItem.getSubject(),
+							newItem.getManufacture(), newItem.getModel(), newItem.getSpace());
+					
+					foundMaterialTags.add(newMat.getTag());
+					foundMaterialSubjects.add(newMat.getSubject());
+					foundMaterialManufacs.add(newMat.getManufacture());
+					foundMaterialModels.add(newMat.getModel());
 				}
 			}
 			
@@ -262,11 +272,11 @@ public class Driver {
 			
 			for(int j = 0; j < s.materialsLog.size(); j++) {
 				
-				if( foundSpa.indexOf(s.materialsLog.get(j).getSubject()) != -1) { // Then the Material is actually a Space
+				if( foundSpa.indexOf(s.materialsLog.get(j).getTag()) != -1) { // Then the Material is actually a Space
 					Space t;
-					t = foundSpaces.get(foundSpa.indexOf(s.materialsLog.get(j).getSubject()));	
+					t = foundSpaces.get(foundSpa.indexOf(s.materialsLog.get(j).getTag()));	
 					for(int k = 0; k < t.materialsLog.size(); k++) {
-						s.addItem(new Item(t.materialsLog.get(k).getSubject()), t.materialsLog.get(k).getCount() );
+						s.addItem(new Item(t.materialsLog.get(k).getTag()), t.materialsLog.get(k).getCount() );
 					}
 					//t.addItem(new Item(s.materialsLog.get(j).getSubject()));
 					//s.addItem(new Item(s.materialsLog.get(j).getSubject()));		
@@ -277,7 +287,7 @@ public class Driver {
 		//https://www.baeldung.com/java-multi-dimensional-arraylist
 		System.out.println("\nPrinting RDA Takeoff Matrix\n");
 		ArrayList<ArrayList<Integer> > mat = new ArrayList<>();
-		int [][] matmat = new int [foundSpaces.size()][foundMaterial.size()];
+		int [][] matmat = new int [foundSpaces.size()][foundMaterialTags.size()];
 		
 		for(int i = 0; i < foundSpaces.size(); i++) {
 			mat.add(new ArrayList<>());
@@ -285,12 +295,15 @@ public class Driver {
 		
 		
 		for(int i = 0; i < foundSpaces.size(); i++) {
-			for(int j = 0; j < foundMaterial.size(); j++) {
+			for(int j = 0; j < foundMaterialTags.size(); j++) {
 				mat.get(i).add(0);
 			}
 		}
 		
-		System.out.println(foundMaterial.toString());
+		System.out.println(foundMaterialTags.toString());
+		System.out.println(foundMaterialSubjects.toString());
+		System.out.println(foundMaterialManufacs.toString());
+		System.out.println(foundMaterialModels.toString());
 		
 		//for(int i = 0; i < foundMaterial.size();i++) {
 		//	System.out.print(i + ", ");
@@ -308,9 +321,14 @@ public class Driver {
 				
 				s = foundSpaces.get(i);
 				row = foundSpa.indexOf(s.getName());
-				col = foundMaterial.indexOf(s.materialsLog.get(j).getSubject());
+				//if(!s.materialsLog.get(j).getSubject().equals("")) {
+				if( s.materialsLog.get(j).getTag() != null) {
+					col = foundMaterialTags.indexOf(s.materialsLog.get(j).getTag());
+					matmat[row][col] = s.materialsLog.get(j).getCount();
+				}
 
-				matmat[row][col] = s.materialsLog.get(j).getCount();
+
+				//matmat[row][col] = s.materialsLog.get(j).getCount();
 			}
 		}
 		
@@ -330,7 +348,6 @@ public class Driver {
 	
 		System.out.println("\nDone");
 		
-
 	} // END OF main()
 
 } // END OF Driver class

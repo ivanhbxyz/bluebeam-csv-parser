@@ -3,13 +3,13 @@ public class Item {
 	
 	private String id;
 	private String space;
+	private String plansTag;
 	private String subject;
 	private String manufacture;
 	private String model;
 	private String dimensions;
-	private String layer;
 	private String comments; // needs parsing. what's the pattern?
-	
+	private String layer;
 	/*
 	 * 
 	 * 
@@ -55,9 +55,11 @@ public class Item {
 		comments = cc;
 	}
 	
-	public Item(String i, String spac, String sub, String man, String mod, String dim,String la, String cc) {
+	public Item(String i, String spac, String tag,
+			String sub, String man, String mod, String dim,String la, String cc) {
 		id = i;
 		space = spac;
+		plansTag = tag;
 		subject = sub;
 		manufacture = man;
 		model = mod;
@@ -82,5 +84,19 @@ public class Item {
 	public String getSpace() {
 		return space;
 	}
+	
+	public String getManufacture() {
+		return manufacture;
+	}
+	
+	public String getModel() {
+		return model;
+	}
+	
+	public String getTag() {
+		return plansTag;
+	}
+	
+	
 
 }
